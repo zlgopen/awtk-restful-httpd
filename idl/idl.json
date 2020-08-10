@@ -1,0 +1,316 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "tk_iostream_t*",
+            "name": "io",
+            "desc": "iostream"
+          },
+          {
+            "type": "int32_t",
+            "name": "method",
+            "desc": "http method"
+          },
+          {
+            "type": "const char*",
+            "name": "url",
+            "desc": "url"
+          },
+          {
+            "type": "const char*",
+            "name": "body",
+            "desc": "body"
+          },
+          {
+            "type": "uint32_t",
+            "name": "body_size",
+            "desc": "body_size"
+          }
+        ],
+        "annotation": {},
+        "desc": "创建connection对象。",
+        "name": "http_connection_create",
+        "return": {
+          "type": "http_connection_t*",
+          "desc": "返回connection对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "http_connection_t*",
+            "name": "c",
+            "desc": "connection对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "向客户端发送成功的响应。",
+        "name": "http_connection_send_ok",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "http_connection_t*",
+            "name": "c",
+            "desc": "connection对象。"
+          },
+          {
+            "type": "int32_t",
+            "name": "status_code",
+            "desc": "http status_code"
+          }
+        ],
+        "annotation": {},
+        "desc": "向客户端发送失败的响应。",
+        "name": "http_connection_send_fail",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "http_connection_t*",
+            "name": "c",
+            "desc": "connection对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "销毁connection对象。",
+        "name": "http_connection_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "io",
+        "desc": "sock",
+        "type": "tk_iostream_t*"
+      },
+      {
+        "name": "method",
+        "desc": "http request method",
+        "type": "int32_t"
+      },
+      {
+        "name": "url",
+        "desc": "url",
+        "type": "const char*"
+      },
+      {
+        "name": "args",
+        "desc": "args from url",
+        "type": "object_t*"
+      },
+      {
+        "name": "req",
+        "desc": "request data",
+        "type": "conf_doc_t*"
+      },
+      {
+        "name": "resp",
+        "desc": "response data",
+        "type": "conf_doc_t*"
+      }
+    ],
+    "header": "httpd/http_connection.h",
+    "desc": "http connection.",
+    "name": "http_connection_t",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "const http_route_entry_t*",
+            "name": "routes",
+            "desc": "路由表。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "nr",
+            "desc": "路由表的数目。"
+          },
+          {
+            "type": "http_connection_t*",
+            "name": "c",
+            "desc": "HTTP连接对象。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "",
+        "name": "http_route_dispatch",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "pattern",
+            "desc": "模式。"
+          },
+          {
+            "type": "const char*",
+            "name": "url",
+            "desc": "URL。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "检查模式是否与url匹配。\n\n> 路径中以':'开头的视为参数。\n> 如/wd/:sesssion/element/:id，其中:sesssion和:id为参数，可以匹配任意字符串。",
+        "name": "http_route_match",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "pattern",
+            "desc": "模式。"
+          },
+          {
+            "type": "const char*",
+            "name": "url",
+            "desc": "URL。"
+          },
+          {
+            "type": "object_t*",
+            "name": "args",
+            "desc": "用于保存解析的参数。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "根据模式解析URL中的参考，并放入args对象。\n\n> 路径中以':'开头的视为参数。\n> 如/wd/:sesssion/element/:id，其中:sesssion和:id为参数，可以匹配任意字符串。",
+        "name": "http_route_parse_args",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "httpd/http_route.h",
+    "desc": "负责HTTP路由管理。",
+    "name": "http_route_t",
+    "annotation": {
+      "fake": true
+    },
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "int",
+            "name": "port",
+            "desc": "监听的端口。"
+          },
+          {
+            "type": "int",
+            "name": "max_client",
+            "desc": "最大客户数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "创建httpd对象。",
+        "name": "httpd_create",
+        "return": {
+          "type": "httpd_t*",
+          "desc": "返回httpd对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "httpd_t*",
+            "name": "httpd",
+            "desc": "httpd对象。"
+          },
+          {
+            "type": "http_route_entry_t*",
+            "name": "routes",
+            "desc": "路由条目。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "routes_nr",
+            "desc": "路由条目数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置路由表。",
+        "name": "httpd_set_routes",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "httpd_t*",
+            "name": "httpd",
+            "desc": "httpd对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "启动服务。",
+        "name": "httpd_start",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "httpd_t*",
+            "name": "httpd",
+            "desc": "httpd对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "销毁httpd对象。",
+        "name": "httpd_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "httpd/httpd.h",
+    "desc": "http服务。",
+    "name": "httpd_t",
+    "level": 1
+  }
+]

@@ -1,0 +1,11 @@
+GET /status HTTP/1.1
+Host: localhost
+Content-Length:0
+
+
+GET /element/login/click HTTP/1.1
+Host: localhost
+Content-Length:0
+
+
+

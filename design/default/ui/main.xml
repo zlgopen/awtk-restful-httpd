@@ -1,0 +1,3 @@
+<window>
+  <button x="c" y="m" w="80" h="30" name="close" text="Close"/>
+</window>

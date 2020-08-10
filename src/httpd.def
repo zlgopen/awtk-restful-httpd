@@ -1,0 +1,13 @@
+LIBRARY   httpd
+EXPORTS
+    http_connection_create @1
+    http_connection_send_ok @2
+    http_connection_send_fail @3
+    http_connection_destroy @4
+    http_route_dispatch @5
+    http_route_match @6
+    http_route_parse_args @7
+    httpd_create @8
+    httpd_set_routes @9
+    httpd_start @10
+    httpd_destroy @11
