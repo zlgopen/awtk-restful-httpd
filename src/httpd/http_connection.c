@@ -35,6 +35,7 @@ http_connection_t* http_connection_create(tk_iostream_t* io, int32_t method, con
 
   c->io = io;
   c->url = url;
+  c->method = method;
   c->args = object_default_create();
   c->resp = conf_doc_load_json("{}", 2);
 

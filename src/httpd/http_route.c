@@ -27,6 +27,10 @@ ret_t http_route_dispatch(const http_route_entry_t* entries, uint32_t nr, http_c
 
   for (i = 0; i < nr; i++) {
     const http_route_entry_t* iter = entries + i;
+    if (c->method != iter->method) {
+      continue;
+    }
+
     if (http_route_match(iter->pattern, c->url)) {
       http_route_parse_args(iter->pattern, c->url, c->args);
       ret = iter->handle(c);
@@ -40,7 +44,7 @@ ret_t http_route_dispatch(const http_route_entry_t* entries, uint32_t nr, http_c
     }
   }
 
-  log_debug("not found: %d\n", c->url);
+  log_debug("not found: %s\n", c->url);
 
   return http_connection_send_fail(c, 404);
 }
@@ -88,7 +92,11 @@ bool_t http_route_match(const char* pattern, const char* url) {
     pattern_end = skip_to_c(pattern_start, '/');
   } while (*url_start && *pattern_start);
 
-  return TRUE;
+  if(*url_start == *pattern_start) {
+    return TRUE;
+  } else {
+    return FALSE;
+  }
 }
 
 ret_t http_route_parse_args(const char* pattern, const char* url, object_t* args) {

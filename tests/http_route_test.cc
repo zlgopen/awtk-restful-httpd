@@ -13,6 +13,8 @@ TEST(HttpRoute, match) {
         "/wd/sesssion/1234/element/start/click"), TRUE);
   ASSERT_EQ(http_route_match("/wd/sesssion/:sesssion/element/:id/click", 
         "/wd/sesssion/1234/element/start/enumerator"), FALSE);
+  ASSERT_EQ(http_route_match("/wd/sesssion/:sesssion/element", 
+        "/wd/sesssion/1234/element/start/enumerator"), FALSE);
 }
 
 TEST(HttpRoute, parse1) {
