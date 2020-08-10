@@ -23,6 +23,12 @@ cd awtk-restful-httpd; scons
 
 ## 运行
 
+> 考虑到 github 的下载速度，生成的临时资源没放到 git 中，需要自己生成资源：
+
+```
+./scripts/update_res.py all
+```
+
 ```
 ./bin/demo
 ```
