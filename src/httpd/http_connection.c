@@ -59,8 +59,8 @@ ret_t http_connection_send_ok(http_connection_t* c) {
 
   conf_doc_save_json(c->resp, body);
   tk_snprintf(header, sizeof(header),
-              "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: "
-              "%d\r\n\r\n",
+              "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\n"
+              "Cache-Control: no-cache\r\nContent-Length: %d\r\n\r\n",
               body->size);
 
   ENSURE(str_set(&str, header) == RET_OK);
@@ -81,8 +81,9 @@ ret_t http_connection_send_fail(http_connection_t* c, int32_t status_code) {
   tk_ostream_t* out = tk_iostream_get_ostream(c->io);
   return_value_if_fail(c != NULL, RET_BAD_PARAMS);
 
-  tk_snprintf(header, sizeof(header), "HTTP/1.1 %d Server Error\r\n\r\nContent-Length: 0\r\n\r\n",
-              status_code);
+  tk_snprintf(header, sizeof(header), "HTTP/1.1 %d Server Error\r\n"
+      "Cache-Control: no-cache\r\nContent-Length: 0\r\n\r\n",
+      status_code);
   ret = tk_ostream_write_len(out, header, strlen(header), 0);
   log_debug("%d:%s\n", ret, header);
 
