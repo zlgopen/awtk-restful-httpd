@@ -235,7 +235,10 @@ ret_t httpd_start(httpd_t* httpd) {
   return_value_if_fail(source != NULL, RET_OOM);
 
   log_debug("listen on %d\n", httpd->port);
-  return main_loop_add_event_source(main_loop(), source);
+  main_loop_add_event_source(main_loop(), source);
+  OBJECT_UNREF(source);
+
+  return RET_OK;
 }
 
 ret_t httpd_destroy(httpd_t* httpd) {

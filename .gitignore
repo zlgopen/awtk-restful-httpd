@@ -8,6 +8,7 @@
 *.obj
 *.exe
 *.pyc
+*.os
 res
 /bin
 /lib
