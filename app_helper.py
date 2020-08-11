@@ -13,47 +13,47 @@ def mkdir_if_not_exist(fullpath):
 class Helper:
     def set_deps(self, DEPENDS_LIBS):
         self.DEPENDS_LIBS = DEPENDS_LIBS
-        return self;
-    
+        return self
+
     def set_libs(self, APP_LIBS):
-        self.APP_LIBS = APP_LIBS 
-        return self;
+        self.APP_LIBS = APP_LIBS
+        return self
 
     def set_dll_def(self, DEF_FILE):
-        self.DEF_FILE = DEF_FILE;
-        return self;
-    
+        self.DEF_FILE = DEF_FILE
+        return self
+
     def set_ccflags(self, APP_CCFLAGS):
-        self.APP_CCFLAGS = APP_CCFLAGS;
-        return self;
-    
+        self.APP_CCFLAGS = APP_CCFLAGS
+        return self
+
     def set_cxxflags(self, APP_CXXFLAGS):
-        self.APP_CXXFLAGS = APP_CXXFLAGS;
-        return self;
-    
+        self.APP_CXXFLAGS = APP_CXXFLAGS
+        return self
+
     def add_deps(self, DEPENDS_LIBS):
         self.DEPENDS_LIBS += DEPENDS_LIBS
-        return self;
+        return self
 
     def add_libs(self, APP_LIBS):
-        self.APP_LIBS += APP_LIBS 
-        return self;
-    
+        self.APP_LIBS += APP_LIBS
+        return self
+
     def add_cpppath(self, APP_CPPPATH):
-        self.APP_CPPPATH += APP_CPPPATH;
-        return self;
-    
+        self.APP_CPPPATH += APP_CPPPATH
+        return self
+
     def add_ccflags(self, APP_CCFLAGS):
-        self.APP_CCFLAGS += APP_CCFLAGS;
-        return self;
-    
+        self.APP_CCFLAGS += APP_CCFLAGS
+        return self
+
     def add_cxxflags(self, APP_CXXFLAGS):
-        self.APP_CXXFLAGS += APP_CXXFLAGS;
-        return self;
-    
+        self.APP_CXXFLAGS += APP_CXXFLAGS
+        return self
+
     def add_linkflags(self, APP_LINKFLAGS):
-        self.APP_LINKFLAGS += APP_LINKFLAGS;
-        return self;
+        self.APP_LINKFLAGS += APP_LINKFLAGS
+        return self
 
     def __init__(self, ARGUMENTS):
         APP_ROOT = os.path.normpath(os.getcwd())
@@ -64,13 +64,15 @@ class Helper:
         self.APP_ROOT = APP_ROOT
         self.BUILD_SHARED = True
         self.ARGUMENTS = ARGUMENTS
+        self.LINUX_FB = ARGUMENTS.get('LINUX_FB', '') != ''
         self.AWTK_ROOT = self.getAwtkRoot()
         self.APP_BIN_DIR = os.path.join(APP_ROOT, 'bin')
         self.APP_LIB_DIR = os.path.join(APP_ROOT, 'lib')
         self.APP_SRC = os.path.join(APP_ROOT, 'src')
-
+        
         mkdir_if_not_exist(self.APP_BIN_DIR);
         mkdir_if_not_exist(self.APP_LIB_DIR);
+
         sys.path.insert(0, self.AWTK_ROOT)
         import awtk_config as awtk
 
@@ -82,9 +84,10 @@ class Helper:
         os.environ['APP_ROOT'] = self.APP_ROOT
         os.environ['BIN_DIR'] = self.APP_BIN_DIR
         os.environ['LIB_DIR'] = self.APP_LIB_DIR
-        
+
         self.parseArgs(awtk, ARGUMENTS)
 
+        print("AWTK_ROOT:" + self.AWTK_ROOT)
         print(ARGUMENTS)
 
     def saveUsesSdkInfo(self):
@@ -121,7 +124,7 @@ class Helper:
                 f.write(content)
 
     def isBuildShared(self):
-        return 'WITH_AWTK_SO' in os.environ and os.environ['WITH_AWTK_SO'] == 'true' and self.BUILD_SHARED == 'true'
+        return 'WITH_AWTK_SO' in os.environ and os.environ['WITH_AWTK_SO'] == 'true' and self.BUILD_SHARED 
 
     def copyAwtkSharedLib(self):
         self.awtk.copySharedLib(self.AWTK_ROOT, self.APP_BIN_DIR, 'awtk')
@@ -134,7 +137,7 @@ class Helper:
             print(self.DEF_FILE)
         else:
             return
-    
+
         idl_gen_tools = os.path.join(self.AWTK_ROOT, 'tools/idl_gen/index.js')
         dll_def_gen_tools = os.path.join(
             self.AWTK_ROOT, 'tools/dll_def_gen/index.js')
@@ -155,6 +158,7 @@ class Helper:
         print('  FONT="default"')
         print('  THEME="default"')
         print('  SHARED=true')
+        print('  LINUX_FB=false')
         sys.exit(0)
 
     def parseArgs(self, awtk, ARGUMENTS):
@@ -212,7 +216,7 @@ class Helper:
         APP_CCFLAGS = APP_CCFLAGS + ' -DAPP_DEFAULT_COUNTRY=\\\"' + \
             APP_DEFAULT_COUNTRY + '\\\" '
         APP_CCFLAGS = APP_CCFLAGS + ' -DAPP_ROOT=\\\"' + \
-            self.APP_ROOT+ '\\\" '
+            self.APP_ROOT + '\\\" '
         os.environ['BUILD_SHARED'] = str(self.isBuildShared())
 
         APP_LINKFLAGS = ''
@@ -220,13 +224,13 @@ class Helper:
         APP_CPPPATH = [self.APP_SRC]
         APP_LIBPATH = [self.APP_LIB_DIR]
         AWTK_CCFLAGS = awtk.CCFLAGS
-        
+
         if platform.system() == 'Linux':
             APP_LINKFLAGS += ' -Wl,-rpath=' + self.APP_BIN_DIR + ' '
 
         if not self.isBuildShared() and hasattr(awtk, 'AWTK_CCFLAGS'):
             AWTK_CCFLAGS = awtk.AWTK_CCFLAGS
-        
+
         if self.isBuildShared():
             APP_LIBPATH = [self.APP_BIN_DIR, self.APP_LIB_DIR]
             AWTK_LIBS = self.AWTK_SHARED_LIBS
@@ -251,14 +255,17 @@ class Helper:
 
         if self.isBuildShared():
             self.copyAwtkSharedLib()
-        
+
         self.saveUsesSdkInfo()
 
-
     def getAwtkRoot(self):
-        awtk_root = '../awtk'
+        awtk = 'awtk'
+        if self.LINUX_FB:
+            awtk = 'awtk-linux-fb'
+
+        awtk_root = '../' + awtk
         if not os.path.exists(awtk_root):
-            dirnames = ['../awtk', '../../awtk', '../../../awtk']
+            dirnames = ['../'+awtk, '../../'+awtk, '../../../'+awtk]
             for dirname in dirnames:
                 if os.path.exists(dirname):
                     awtk_root = dirname
@@ -286,7 +293,7 @@ class Helper:
             LIBPATH += [os.path.join(os.path.abspath(iter['root']), 'lib')]
             LIBPATH += [os.path.join(os.path.abspath(iter['root']), 'bin')]
 
-        self.prepare();
+        self.prepare()
         if hasattr(awtk, 'CC'):
             DefaultEnvironment(
                 CC=awtk.CC,
@@ -300,7 +307,7 @@ class Helper:
                 LIBS=LIBS,
                 LIBPATH=LIBPATH,
                 CCFLAGS=CCFLAGS,
-                CXXFLAGS = CXXFLAGS,
+                CXXFLAGS=CXXFLAGS,
                 TARGET_ARCH=awtk.TARGET_ARCH,
                 OS_SUBSYSTEM_CONSOLE=awtk.OS_SUBSYSTEM_CONSOLE,
                 OS_SUBSYSTEM_WINDOWS=awtk.OS_SUBSYSTEM_WINDOWS)
@@ -312,7 +319,7 @@ class Helper:
                 LIBS=LIBS,
                 LIBPATH=LIBPATH,
                 CCFLAGS=CCFLAGS,
-                CXXFLAGS = CXXFLAGS,
+                CXXFLAGS=CXXFLAGS,
                 TARGET_ARCH=awtk.TARGET_ARCH,
                 OS_SUBSYSTEM_CONSOLE=awtk.OS_SUBSYSTEM_CONSOLE,
                 OS_SUBSYSTEM_WINDOWS=awtk.OS_SUBSYSTEM_WINDOWS)
