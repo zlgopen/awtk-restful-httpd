@@ -66,3 +66,5 @@ ret_t my_httpd_start(httpd_t* httpd) {
 ```
 
 > 完整示例请参考：demos
+
+> [awtk-ui-automation](https://github.com/zlgopen/awtk-ui-automation) 是 awtk-restful-httpd 的第一个应用，可以作为示例代码参考。
