@@ -29,6 +29,8 @@ cd awtk-restful-httpd; scons
 ./scripts/update_res.py all
 ```
 
+> 或者通过 designer 生成资源
+
 ```
 ./bin/demo
 ```
