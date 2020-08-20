@@ -16,20 +16,35 @@ cd awtk; scons; cd -
 ```
 
 2. 获取 awtk-restful-httpd 并编译
+
 ```
 git clone https://github.com/zlgopen/awtk-restful-httpd.git
-cd awtk-restful-httpd; scons
+cd awtk-restful-httpd
 ```
 
-## 运行
-
-> 考虑到 github 的下载速度，生成的临时资源没放到 git 中，需要自己生成资源：
+* 生成资源
 
 ```
-./scripts/update_res.py all
+python ./scripts/update_res.py all
 ```
 
 > 或者通过 designer 生成资源
+
+
+* 编译PC版本
+
+```
+scons
+```
+
+* 编译LINUX FB版本
+
+```
+scons LINUX_FB=true
+```
+
+
+## 运行
 
 ```
 ./bin/demo
