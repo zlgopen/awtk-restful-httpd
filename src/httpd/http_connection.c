@@ -68,7 +68,11 @@ ret_t http_connection_send_ok(http_connection_t* c) {
   ret = tk_ostream_write_len(out, str.str, str.size, 0);
   ENSURE(ret == str.size);
 
-  log_debug("%d:%s\n", ret, str.str);
+  if (str.size < 1000) {
+    log_debug("%d:%s\n", ret, str.str);
+  } else {
+    log_debug("%d:%s\n", ret, header);
+  }
   str_reset(&str);
   str_reset(&str_body);
 
