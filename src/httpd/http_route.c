@@ -34,7 +34,7 @@ ret_t http_route_dispatch(const http_route_entry_t* entries, uint32_t nr, http_c
     if (http_route_match(iter->pattern, c->url)) {
       http_route_parse_args(iter->pattern, c->url, c->args);
       ret = iter->handle(c);
-      if (ret == RET_STOP) {
+      if (ret == RET_STOP || ret == RET_DONE) {
         return RET_OK;
       } else if (ret == RET_OK) {
         return http_connection_send_ok(c);
@@ -92,7 +92,7 @@ bool_t http_route_match(const char* pattern, const char* url) {
     pattern_end = skip_to_c(pattern_start, '/');
   } while (*url_start && *pattern_start);
 
-  if(*url_start == *pattern_start) {
+  if (*url_start == *pattern_start) {
     return TRUE;
   } else {
     return FALSE;
