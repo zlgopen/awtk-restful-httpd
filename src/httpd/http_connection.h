@@ -45,6 +45,11 @@ typedef struct _http_connection_t {
   int32_t method;
 
   /**
+   * @property {const char*} etag
+   * etag
+   */
+  const char* etag;
+  /**
    * @property {const char*} url
    * url
    */

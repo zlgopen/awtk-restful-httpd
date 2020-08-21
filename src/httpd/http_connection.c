@@ -250,20 +250,29 @@ ret_t http_connection_send_file(http_connection_t* c, const char* filename) {
   }
 
   fs_file_stat(fp, &info);
-  tk_snprintf(etag, sizeof(etag), "%llu-%llu", info.mtime, info.size);
+  tk_snprintf(etag, sizeof(etag), "W/\"%llu-%llu\"", info.mtime, info.size);
 
   memset(buffer, 0x00, buffer_size);
-  ret = tk_snprintf(buffer, buffer_size - 1,
-                    "HTTP/1.1 %d %s\r\n"
-                    "ETag: %s\r\n"
-                    "Content-Type: %s\r\n"
-                    "Content-Length: %u\r\n\r\n",
-                    status, status_text, etag, content_type, size);
+  if(tk_str_eq(etag, c->etag)) {
+    ret = tk_snprintf(buffer, buffer_size - 1,
+                      "HTTP/1.1 304 Not Modified\r\n"
+                      "Content-Length: 0\r\n\r\n");
+    log_debug("%s\n", buffer);
+    ret = tk_ostream_write_len(out, buffer, strlen(buffer), 1000);
+  } else {
+    ret = tk_snprintf(buffer, buffer_size - 1,
+                      "HTTP/1.1 %d %s\r\n"
+                      "ETag: %s\r\n"
+                      "Content-Type: %s\r\n"
+                      "Cache-Control: public, max-age=604800, immutable\r\n"
+                      "Content-Length: %u\r\n\r\n",
+                      status, status_text, etag, content_type, size);
 
-  log_debug("%s\n", buffer);
-  ret = tk_ostream_write_len(out, buffer, strlen(buffer), 1000);
-  while ((ret = fs_file_read(fp, buffer, buffer_size)) > 0) {
-    tk_ostream_write_len(out, buffer, ret, 1000);
+    log_debug("%s\n", buffer);
+    ret = tk_ostream_write_len(out, buffer, strlen(buffer), 1000);
+    while ((ret = fs_file_read(fp, buffer, buffer_size)) > 0) {
+      tk_ostream_write_len(out, buffer, ret, 1000);
+    }
   }
   fs_file_close(fp);
 

@@ -61,6 +61,7 @@ typedef struct _my_parser_t {
   tk_iostream_t* io;
 
   char* url;
+  char* etag;
   char* query;
   char* content_type;
   int content_length;
@@ -96,6 +97,8 @@ static int httpd_on_header_value(http_parser* parser, const char* p, size_t len)
     my->content_type = tk_strndup(p, len);
   } else if (tk_str_ieq(my->key, "Content-Length")) {
     my->content_length = tk_atoi(p);
+  } else if (tk_str_ieq(my->key, "If-None-Match")) {
+    my->etag = tk_strndup(p, len);
   }
 
   return 0;
@@ -121,6 +124,7 @@ static int httpd_on_message_complete(http_parser* parser) {
   c = http_connection_create(my->io, method, my->url, body->str, body->size);
   assert(c != NULL);
   if (c != NULL) {
+    c->etag = my->etag;
     http_route_dispatch(my->httpd->routes, my->httpd->routes_nr, c);
     http_connection_destroy(c);
   }
@@ -164,6 +168,7 @@ static ret_t httpd_parser_destroy(http_parser* parser) {
   TKMEM_FREE(my->query);
   OBJECT_UNREF(my->io);
   str_reset(&(my->body));
+  TKMEM_FREE(my->etag);
   TKMEM_FREE(my->content_type);
   memset(parser, 0x00, sizeof(my_parser_t));
 

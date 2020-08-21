@@ -105,6 +105,11 @@
         "type": "int32_t"
       },
       {
+        "name": "etag",
+        "desc": "etag",
+        "type": "const char*"
+      },
+      {
         "name": "url",
         "desc": "url",
         "type": "const char*"
