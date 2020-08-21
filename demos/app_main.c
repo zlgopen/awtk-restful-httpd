@@ -6,6 +6,7 @@ static httpd_t* s_httpd = NULL;
 static ret_t my_httpd_on_status(http_connection_t* c) {
   value_t v;
   conf_doc_set(c->resp, "status", value_set_int(&v, 0));
+  conf_doc_set_str(c->resp, "message", "hello awtk");
 
   return RET_OK;
 }
