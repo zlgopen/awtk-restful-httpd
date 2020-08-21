@@ -1,13 +1,16 @@
 LIBRARY   httpd
 EXPORTS
     http_connection_create @1
-    http_connection_send_ok @2
-    http_connection_send_fail @3
-    http_connection_destroy @4
-    http_route_dispatch @5
-    http_route_match @6
-    http_route_parse_args @7
-    httpd_create @8
-    httpd_set_routes @9
-    httpd_start @10
-    httpd_destroy @11
+    http_connection_send @2
+    http_connection_send_file @3
+    http_connection_send_ok @4
+    http_connection_send_fail @5
+    http_connection_destroy @6
+    http_route_dispatch @7
+    http_route_match @8
+    http_route_parse_args @9
+    http_route_handle_static_file @10
+    httpd_create @11
+    httpd_set_routes @12
+    httpd_start @13
+    httpd_destroy @14

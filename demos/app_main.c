@@ -3,9 +3,8 @@
 
 static httpd_t* s_httpd = NULL;
 
-static ret_t my_httpd_on_file(http_connection_t* c) {
-  http_connection_send_file(c, "demos/app_main.c");
-  return RET_STOP;
+static ret_t my_httpd_on_get_file(http_connection_t* c) {
+  return http_route_handle_static_file(c, "static");
 }
 
 static ret_t my_httpd_on_status(http_connection_t* c) {
@@ -32,8 +31,8 @@ static ret_t my_httpd_on_element_action(http_connection_t* c) {
 
 static const http_route_entry_t s_my_httpd_routes[] = {
   {HTTP_GET, "/status", my_httpd_on_status},
-  {HTTP_GET, "/file", my_httpd_on_file},
-  {HTTP_GET, "element/:element/:action", my_httpd_on_element_action}
+  {HTTP_GET, "element/:element/:action", my_httpd_on_element_action},
+  {HTTP_GET, "*", my_httpd_on_get_file},
 };
 
 ret_t my_httpd_start(httpd_t* httpd) {

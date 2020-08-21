@@ -44,6 +44,63 @@
             "type": "http_connection_t*",
             "name": "c",
             "desc": "connection对象。"
+          },
+          {
+            "type": "int",
+            "name": "status",
+            "desc": "响应码。"
+          },
+          {
+            "type": "const char*",
+            "name": "extra_header",
+            "desc": "额外的头信息。"
+          },
+          {
+            "type": "const void*",
+            "name": "body",
+            "desc": "body数据。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "size",
+            "desc": "body数据长度。"
+          }
+        ],
+        "annotation": {},
+        "desc": "向客户端发送数据。",
+        "name": "http_connection_send",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "http_connection_t*",
+            "name": "c",
+            "desc": "connection对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "filename",
+            "desc": "文件名。"
+          }
+        ],
+        "annotation": {},
+        "desc": "向客户端发送文件。",
+        "name": "http_connection_send_file",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "http_connection_t*",
+            "name": "c",
+            "desc": "connection对象。"
           }
         ],
         "annotation": {},
@@ -212,6 +269,29 @@
         },
         "desc": "根据模式解析URL中的参考，并放入args对象。\n\n> 路径中以':'开头的视为参数。\n> 如/wd/:sesssion/element/:id，其中:sesssion和:id为参数，可以匹配任意字符串。",
         "name": "http_route_parse_args",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "http_connection_t*",
+            "name": "c",
+            "desc": "HTTP连接对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "web_root",
+            "desc": "静态文件的根目录。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "处理静态文件。",
+        "name": "http_route_handle_static_file",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"

@@ -208,21 +208,157 @@ ret_t http_connection_send(http_connection_t* c, int status, const char* extra_h
 }
 
 static const char* get_content_type_of_filename(const char* filename) {
-  const char* ext = strrchr(filename, '.');
-  return_value_if_fail(ext != NULL, "");
+  const char* type = strrchr(filename, '.');
+  return_value_if_fail(type != NULL, "");
 
-  if (tk_str_eq(ext, ".json")) {
+  if (tk_str_ieq(".aac", type)) {
+    return "audio/aac";
+  } else if (tk_str_ieq(".gif", type)) {
+    return "image/gif";
+  } else if (tk_str_ieq(".htm", type)) {
+    return "text/html";
+  } else if (tk_str_ieq(".html", type)) {
+    return "text/html";
+  } else if (tk_str_ieq(".jpg", type)) {
+    return "image/jpeg";
+  } else if (tk_str_ieq(".jpeg", type)) {
+    return "image/jpeg";
+  } else if (tk_str_ieq(".js", type)) {
+    return "application/javascript; charset=utf-8";
+  } else if (tk_str_ieq(".json", type)) {
     return "application/json; charset=utf-8";
-  } else if (tk_str_eq(ext, ".js")) {
-    return "application/json; charset=utf-8";
-  } else if (tk_str_eq(ext, ".png")) {
-    return "application/json; charset=utf-8";
-  } else if (tk_str_eq(ext, ".jpg")) {
-    return "application/json; charset=utf-8";
-  } else if (tk_str_eq(ext, ".txt")) {
-    return "application/json; charset=utf-8";
-  } else if (tk_str_eq(ext, ".c")) {
-    return "text/plain; charset=utf-8";
+  } else if (tk_str_ieq(".png", type)) {
+    return "image/png";
+  } else if (tk_str_ieq(".svg", type)) {
+    return "image/svg+xml";
+  } else if (tk_str_ieq(".ico", type)) {
+    return "image/vnd.microsoft.icon";
+  } else if (tk_str_ieq(".abw", type)) {
+    return "application/x-abiword";
+  } else if (tk_str_ieq(".arc", type)) {
+    return "application/x-freearc";
+  } else if (tk_str_ieq(".avi", type)) {
+    return "video/x-msvideo";
+  } else if (tk_str_ieq(".azw", type)) {
+    return "application/vnd.amazon.ebook";
+  } else if (tk_str_ieq(".bin", type)) {
+    return "application/octet-stream";
+  } else if (tk_str_ieq(".bmp", type)) {
+    return "image/bmp";
+  } else if (tk_str_ieq(".bz", type)) {
+    return "application/x-bzip";
+  } else if (tk_str_ieq(".bz2", type)) {
+    return "application/x-bzip2";
+  } else if (tk_str_ieq(".csh", type)) {
+    return "application/x-csh";
+  } else if (tk_str_ieq(".css", type)) {
+    return "text/css";
+  } else if (tk_str_ieq(".csv", type)) {
+    return "text/csv";
+  } else if (tk_str_ieq(".doc", type)) {
+    return "application/msword";
+  } else if (tk_str_ieq(".docx", type)) {
+    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  } else if (tk_str_ieq(".eot", type)) {
+    return "application/vnd.ms-fontobject";
+  } else if (tk_str_ieq(".epub", type)) {
+    return "application/epub+zip";
+  } else if (tk_str_ieq(".gz", type)) {
+    return "application/gzip";
+  } else if (tk_str_ieq(".ics", type)) {
+    return "text/calendar";
+  } else if (tk_str_ieq(".jar", type)) {
+    return "application/java-archive";
+  } else if (tk_str_ieq(".jsonld", type)) {
+    return "application/ld+json";
+  } else if (tk_str_ieq(".mid", type)) {
+    return "audio/x-midi";
+  } else if (tk_str_ieq(".midi", type)) {
+    return "audio/x-midi";
+  } else if (tk_str_ieq(".mjs", type)) {
+    return "text/javascript; charset=utf-8";
+  } else if (tk_str_ieq(".mp3", type)) {
+    return "audio/mpeg";
+  } else if (tk_str_ieq(".mpeg", type)) {
+    return "video/mpeg";
+  } else if (tk_str_ieq(".mpkg", type)) {
+    return "application/vnd.apple.installer+xml";
+  } else if (tk_str_ieq(".odp", type)) {
+    return "application/vnd.oasis.opendocument.presentation";
+  } else if (tk_str_ieq(".ods", type)) {
+    return "application/vnd.oasis.opendocument.spreadsheet";
+  } else if (tk_str_ieq(".odt", type)) {
+    return "application/vnd.oasis.opendocument.text";
+  } else if (tk_str_ieq(".oga", type)) {
+    return "audio/ogg";
+  } else if (tk_str_ieq(".ogv", type)) {
+    return "video/ogg";
+  } else if (tk_str_ieq(".ogx", type)) {
+    return "application/ogg";
+  } else if (tk_str_ieq(".opus", type)) {
+    return "audio/opus";
+  } else if (tk_str_ieq(".otf", type)) {
+    return "font/otf";
+  } else if (tk_str_ieq(".pdf", type)) {
+    return "application/pdf";
+  } else if (tk_str_ieq(".php", type)) {
+    return "application/x-httpd-php";
+  } else if (tk_str_ieq(".ppt", type)) {
+    return "application/vnd.ms-powerpoint";
+  } else if (tk_str_ieq(".pptx", type)) {
+    return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+  } else if (tk_str_ieq(".rar", type)) {
+    return "application/vnd.rar";
+  } else if (tk_str_ieq(".rtf", type)) {
+    return "application/rtf";
+  } else if (tk_str_ieq(".sh", type)) {
+    return "application/x-sh";
+  } else if (tk_str_ieq(".swf", type)) {
+    return "application/x-shockwave-flash";
+  } else if (tk_str_ieq(".tar", type)) {
+    return "application/x-tar";
+  } else if (tk_str_ieq(".tif", type)) {
+    return "image/tiff";
+  } else if (tk_str_ieq(".tiff", type)) {
+    return "image/tiff";
+  } else if (tk_str_ieq(".ts", type)) {
+    return "video/mp2t";
+  } else if (tk_str_ieq(".ttf", type)) {
+    return "font/ttf";
+  } else if (tk_str_ieq(".txt", type)) {
+    return "text/plain";
+  } else if (tk_str_ieq(".vsd", type)) {
+    return "application/vnd.visio";
+  } else if (tk_str_ieq(".wav", type)) {
+    return "audio/wav";
+  } else if (tk_str_ieq(".weba", type)) {
+    return "audio/webm";
+  } else if (tk_str_ieq(".webm", type)) {
+    return "video/webm";
+  } else if (tk_str_ieq(".webp", type)) {
+    return "image/webp";
+  } else if (tk_str_ieq(".woff", type)) {
+    return "font/woff";
+  } else if (tk_str_ieq(".woff2", type)) {
+    return "font/woff2";
+  } else if (tk_str_ieq(".xhtml", type)) {
+    return "application/xhtml+xml";
+  } else if (tk_str_ieq(".xls", type)) {
+    return "application/vnd.ms-excel";
+  } else if (tk_str_ieq(".xlsx", type)) {
+    return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  } else if (tk_str_ieq(".xml", type)) {
+    return "text/xml";
+  } else if (tk_str_ieq(".xul", type)) {
+    return "application/vnd.mozilla.xul+xml";
+  } else if (tk_str_ieq(".zip", type)) {
+    return "application/zip";
+  } else if (tk_str_ieq(".3gp", type)) {
+    return "video/3gpp";
+  } else if (tk_str_ieq(".3g2", type)) {
+    return "video/3gpp2";
+  } else if (tk_str_ieq(".7z", type)) {
+    return "application/x-7z-compressed";
   } else {
     return "text/plain; charset=utf-8";
   }
@@ -253,7 +389,7 @@ ret_t http_connection_send_file(http_connection_t* c, const char* filename) {
   tk_snprintf(etag, sizeof(etag), "W/\"%llu-%llu\"", info.mtime, info.size);
 
   memset(buffer, 0x00, buffer_size);
-  if(tk_str_eq(etag, c->etag)) {
+  if (tk_str_eq(etag, c->etag)) {
     ret = tk_snprintf(buffer, buffer_size - 1,
                       "HTTP/1.1 304 Not Modified\r\n"
                       "Content-Length: 0\r\n\r\n");
@@ -270,10 +406,12 @@ ret_t http_connection_send_file(http_connection_t* c, const char* filename) {
 
     log_debug("%s\n", buffer);
     ret = tk_ostream_write_len(out, buffer, strlen(buffer), 1000);
+
     while ((ret = fs_file_read(fp, buffer, buffer_size)) > 0) {
       tk_ostream_write_len(out, buffer, ret, 1000);
     }
   }
+  TKMEM_FREE(buffer);
   fs_file_close(fp);
 
   return RET_OK;

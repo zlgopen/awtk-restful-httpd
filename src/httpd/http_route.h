@@ -30,8 +30,15 @@ BEGIN_C_DECLS
 typedef ret_t (*http_handler_t)(http_connection_t* c);
 
 typedef struct _http_route_entry_t {
+  /*请求方法: HTTP_GET/HTTP_POST/HTTP_DELETE/HTTP_PUT */
   int method;
+  /**
+   * 匹配模式
+   *> 路径中以':'开头的视为参数。
+   *> 如/wd/:sesssion/element/:id，其中:sesssion和:id为参数，可以匹配任意字符串。
+   **/
   const char* pattern;
+  /*处理函数*/
   http_handler_t handle;
 } http_route_entry_t;
 
@@ -83,6 +90,19 @@ bool_t http_route_match(const char* pattern, const char* url);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t http_route_parse_args(const char* pattern, const char* url, object_t* args);
+
+/**
+ * @method http_route_handle_static_file
+ * 处理静态文件。
+ *
+ * @annotation ["static"]
+ * 
+ * @param {http_connection_t*} c HTTP连接对象。
+ * @param {const char*} web_root 静态文件的根目录。
+ * 
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t http_route_handle_static_file(http_connection_t* c, const char* web_root);
 
 END_C_DECLS
 

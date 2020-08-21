@@ -18,6 +18,7 @@
  * 2020-08-09 Li XianJing <xianjimli@hotmail.com> created
  *
  */
+#include "tkc/path.h"
 #include "http_route.h"
 
 ret_t http_route_dispatch(const http_route_entry_t* entries, uint32_t nr, http_connection_t* c) {
@@ -74,6 +75,10 @@ bool_t http_route_match(const char* pattern, const char* url) {
   const char* pattern_start = skip_c(pattern, '/');
   const char* pattern_end = skip_to_c(pattern_start, '/');
 
+  if (tk_str_eq(pattern, "*")) {
+    return TRUE;
+  }
+
   do {
     if (*pattern_start != ':') {
       if ((url_end - url_start) != (pattern_end - pattern_start)) {
@@ -129,4 +134,22 @@ ret_t http_route_parse_args(const char* pattern, const char* url, object_t* args
   } while (*url_start && *pattern_start);
 
   return RET_OK;
+}
+
+ret_t http_route_handle_static_file(http_connection_t* c, const char* web_root) {
+  char root[MAX_PATH + 1];
+  char filename[MAX_PATH + 1];
+  char abs_path[MAX_PATH + 1];
+  path_abs(web_root, abs_path, MAX_PATH);
+  path_normalize(abs_path, root, MAX_PATH);
+
+  path_build(abs_path, MAX_PATH, root, c->url, NULL);
+  path_normalize(abs_path, filename, MAX_PATH);
+
+  if (strncmp(filename, root, strlen(root)) == 0) {
+    return http_connection_send_file(c, filename);
+  } else {
+    log_debug("bad request: %s\n", c->url);
+    return RET_FAIL;
+  }
 }

@@ -89,6 +89,34 @@ http_connection_t* http_connection_create(tk_iostream_t* io, int32_t method, con
                                           const char* body, uint32_t body_size);
 
 /**
+ * @method http_connection_send
+ * 
+ * 向客户端发送数据。
+ * 
+ * @param {http_connection_t*} c connection对象。
+ * @param {int} status 响应码。
+ * @param {const char*} extra_header 额外的头信息。
+ * @param {const void*} body body数据。
+ * @param {uint32_t} size  body数据长度。
+ * 
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t http_connection_send(http_connection_t* c, int status, const char* extra_header,
+                           const void* body, uint32_t size);
+
+/**
+ * @method http_connection_send_file
+ * 
+ * 向客户端发送文件。
+ * 
+ * @param {http_connection_t*} c connection对象。
+ * @param {const char*} filename 文件名。
+ * 
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t http_connection_send_file(http_connection_t* c, const char* filename);
+
+/**
  * @method http_connection_send_ok
  * 
  * 向客户端发送成功的响应。
@@ -98,7 +126,6 @@ http_connection_t* http_connection_create(tk_iostream_t* io, int32_t method, con
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t http_connection_send_ok(http_connection_t* c);
-
 /**
  * @method http_connection_send_fail
  * 
