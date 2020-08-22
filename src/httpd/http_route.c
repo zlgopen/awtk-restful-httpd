@@ -136,7 +136,8 @@ ret_t http_route_parse_args(const char* pattern, const char* url, object_t* args
   return RET_OK;
 }
 
-static const char* get_file_name(http_connection_t* c, const char* web_root, char filename[MAX_PATH + 1]) {
+static const char* get_file_name(http_connection_t* c, const char* web_root,
+                                 char filename[MAX_PATH + 1]) {
   char root[MAX_PATH + 1];
   char abs_path[MAX_PATH + 1];
   path_abs(web_root, abs_path, MAX_PATH);
