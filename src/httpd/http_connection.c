@@ -366,7 +366,7 @@ static const char* get_content_type_of_filename(const char* filename) {
 
 static const char* get_gzip_filename(const char* filename, char path[MAX_PATH + 1]) {
   tk_snprintf(path, MAX_PATH, "%s.gz", filename);
-  if(file_exist(path)) {
+  if (file_exist(path)) {
     log_debug("gzip file exists:%s\n", path);
     return path;
   } else {
@@ -390,8 +390,8 @@ ret_t http_connection_send_file(http_connection_t* c, const char* filename) {
   const char* content_type = get_content_type_of_filename(filename);
   const char* gzip_filename = get_gzip_filename(filename, path);
 
-  if(gzip_filename != NULL) {
-    filename = gzip_filename; 
+  if (gzip_filename != NULL) {
+    filename = gzip_filename;
     content_encoding = "Content-Encoding: gzip\r\n";
   }
 
