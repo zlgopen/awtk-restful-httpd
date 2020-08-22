@@ -136,9 +136,8 @@ ret_t http_route_parse_args(const char* pattern, const char* url, object_t* args
   return RET_OK;
 }
 
-ret_t http_route_handle_static_file(http_connection_t* c, const char* web_root) {
+static const char* get_file_name(http_connection_t* c, const char* web_root, char filename[MAX_PATH + 1]) {
   char root[MAX_PATH + 1];
-  char filename[MAX_PATH + 1];
   char abs_path[MAX_PATH + 1];
   path_abs(web_root, abs_path, MAX_PATH);
   path_normalize(abs_path, root, MAX_PATH);
@@ -147,9 +146,16 @@ ret_t http_route_handle_static_file(http_connection_t* c, const char* web_root) 
   path_normalize(abs_path, filename, MAX_PATH);
 
   if (strncmp(filename, root, strlen(root)) == 0) {
-    return http_connection_send_file(c, filename);
+    return filename;
   } else {
     log_debug("bad request: %s\n", c->url);
-    return RET_FAIL;
+    return NULL;
   }
+}
+
+ret_t http_route_handle_static_file(http_connection_t* c, const char* web_root) {
+  char filename[MAX_PATH + 1];
+  return_value_if_fail(get_file_name(c, web_root, filename) != NULL, RET_FAIL);
+
+  return http_connection_send_file(c, filename);
 }

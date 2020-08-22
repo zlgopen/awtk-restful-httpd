@@ -364,18 +364,39 @@ static const char* get_content_type_of_filename(const char* filename) {
   }
 }
 
+static const char* get_gzip_filename(const char* filename, char path[MAX_PATH + 1]) {
+  tk_snprintf(path, MAX_PATH, "%s.gz", filename);
+  if(file_exist(path)) {
+    log_debug("gzip file exists:%s\n", path);
+    return path;
+  } else {
+    return NULL;
+  }
+}
+
 ret_t http_connection_send_file(http_connection_t* c, const char* filename) {
   int ret = 0;
   char etag[64];
+  int32_t size = 0;
   int status = 200;
   char* buffer = NULL;
+  fs_file_t* fp = NULL;
   fs_stat_info_t info;
+  char path[MAX_PATH + 1];
   uint32_t buffer_size = 4000;
-  int32_t size = file_get_size(filename);
+  const char* content_encoding = "";
   tk_ostream_t* out = tk_iostream_get_ostream(c->io);
-  fs_file_t* fp = fs_open_file(os_fs(), filename, "rb");
   const char* status_text = http_status_text(status);
   const char* content_type = get_content_type_of_filename(filename);
+  const char* gzip_filename = get_gzip_filename(filename, path);
+
+  if(gzip_filename != NULL) {
+    filename = gzip_filename; 
+    content_encoding = "Content-Encoding: gzip\r\n";
+  }
+
+  size = file_get_size(filename);
+  fp = fs_open_file(os_fs(), filename, "rb");
   return_value_if_fail(fp != NULL, RET_BAD_PARAMS);
 
   buffer = TKMEM_ALLOC(buffer_size);
@@ -400,9 +421,10 @@ ret_t http_connection_send_file(http_connection_t* c, const char* filename) {
                       "HTTP/1.1 %d %s\r\n"
                       "ETag: %s\r\n"
                       "Content-Type: %s\r\n"
+                      "%s"
                       "Cache-Control: public, max-age=604800, immutable\r\n"
                       "Content-Length: %u\r\n\r\n",
-                      status, status_text, etag, content_type, size);
+                      status, status_text, etag, content_type, content_encoding, size);
 
     log_debug("%s\n", buffer);
     ret = tk_ostream_write_len(out, buffer, strlen(buffer), 1000);
