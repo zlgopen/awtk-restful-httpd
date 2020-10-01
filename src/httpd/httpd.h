@@ -34,6 +34,8 @@ BEGIN_C_DECLS
  * http服务。
  */
 typedef struct _httpd_t {
+  void* user_data;
+
   /*private*/
   int sock;
   int port;
