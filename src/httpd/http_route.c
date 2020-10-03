@@ -24,7 +24,21 @@
 ret_t http_route_dispatch(const http_route_entry_t* entries, uint32_t nr, http_connection_t* c) {
   uint32_t i = 0;
   ret_t ret = RET_OK;
+  const char* p = NULL;
+  char url[MAX_PATH + 1];
   return_value_if_fail(entries != NULL && c != NULL, RET_BAD_PARAMS);
+
+  p = strchr(c->url, '?');
+  memset(url, 0, sizeof(url));
+
+  if (p != NULL) {
+    uint32_t len = p - c->url;
+
+    len = tk_min(len, MAX_PATH);
+    tk_strncpy(url, c->url, len);
+  } else {
+    tk_strncpy(url, c->url, MAX_PATH);
+  }
 
   for (i = 0; i < nr; i++) {
     const http_route_entry_t* iter = entries + i;
@@ -32,8 +46,8 @@ ret_t http_route_dispatch(const http_route_entry_t* entries, uint32_t nr, http_c
       continue;
     }
 
-    if (http_route_match(iter->pattern, c->url)) {
-      http_route_parse_args(iter->pattern, c->url, c->args);
+    if (http_route_match(iter->pattern, url)) {
+      http_route_parse_args(iter->pattern, url, c->args);
       ret = iter->handle(c);
       if (ret == RET_STOP || ret == RET_DONE) {
         return RET_OK;
