@@ -444,7 +444,7 @@ ret_t http_connection_send_ok(http_connection_t* c) {
   ret_t ret = RET_OK;
   str_t* body = &(str_body);
   const char* header =
-      "Content-Type: application/json; charset=utf-8\r\nCache-Control: no-cache\r\n";
+      "Content-Type: application/json; charset=utf-8\r\nCache-Control: no-cache\r\nAccess-Control-Allow-Origin: *\r\n";
   str_init(body, 512);
   conf_doc_save_json(c->resp, body);
   ret = http_connection_send(c, 200, header, body->str, body->size);

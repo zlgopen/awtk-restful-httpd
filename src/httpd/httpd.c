@@ -184,12 +184,12 @@ static ret_t httpd_on_data(event_source_t* source) {
   my_parser_t* my = (my_parser_t*)(event_source_fd->ctx);
   tk_istream_t* in = tk_iostream_get_istream(my->io);
 
-  ret = tk_istream_read_len(in, buff, sizeof(buff), 1000);
+  ret = tk_istream_read_len(in, buff, sizeof(buff) - 1, 1000);
   log_debug("client data:ret=%d\n", ret);
 
   if (ret > 0) {
     buff[ret] = '\0';
-    http_parser_execute((http_parser*)my, &s_parser_settings, buff, strlen(buff));
+    http_parser_execute((http_parser*)my, &s_parser_settings, buff, ret);
 
     if (my->completed) {
       httpd_parser_destroy((http_parser*)my);
