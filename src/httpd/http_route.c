@@ -19,6 +19,7 @@
  *
  */
 #include "tkc/path.h"
+#include "tkc/utils.h"
 #include "http_route.h"
 
 ret_t http_route_dispatch(const http_route_entry_t* entries, uint32_t nr, http_connection_t* c) {
