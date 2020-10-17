@@ -378,6 +378,7 @@ ret_t http_connection_send_file(http_connection_t* c, const char* filename) {
   int ret = 0;
   char etag[64];
   int32_t size = 0;
+  int32_t sent = 0;
   int status = 200;
   char* buffer = NULL;
   fs_file_t* fp = NULL;
@@ -427,16 +428,19 @@ ret_t http_connection_send_file(http_connection_t* c, const char* filename) {
                       status, status_text, etag, content_type, content_encoding, size);
 
     log_debug("%s\n", buffer);
-    ret = tk_ostream_write_len(out, buffer, strlen(buffer), 1000);
+    ret = tk_ostream_write_len(out, buffer, strlen(buffer), 5000);
 
     while ((ret = fs_file_read(fp, buffer, buffer_size)) > 0) {
-      tk_ostream_write_len(out, buffer, ret, 1000);
+      ret = tk_ostream_write_len(out, buffer, ret, 5000);
+      sent += ret;
     }
   }
+
+  log_debug("sent=%d size=%d\n", sent, size);
   TKMEM_FREE(buffer);
   fs_file_close(fp);
 
-  return RET_OK;
+  return RET_DONE;
 }
 
 ret_t http_connection_send_ok(http_connection_t* c) {
@@ -444,7 +448,10 @@ ret_t http_connection_send_ok(http_connection_t* c) {
   ret_t ret = RET_OK;
   str_t* body = &(str_body);
   const char* header =
-      "Content-Type: application/json; charset=utf-8\r\nCache-Control: no-cache\r\nAccess-Control-Allow-Origin: *\r\n";
+      "Content-Type: application/json; charset=utf-8\r\n"
+      "Cache-Control: no-cache\r\n"
+      "Access-Control-Allow-Origin: *\r\n";
+
   str_init(body, 512);
   conf_doc_save_json(c->resp, body);
   ret = http_connection_send(c, 200, header, body->str, body->size);
