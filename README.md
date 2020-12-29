@@ -56,6 +56,12 @@ scons LINUX_FB=true
 ./bin/demo
 ```
 
+默认监听8000端口，可以浏览器访问：
+
+```
+http://localhost:8000/index.html
+```
+
 ## 4. 示例
 
 ### 4.1 定义路由表
