@@ -154,6 +154,7 @@ static http_parser* httpd_parser_create(httpd_t* httpd, int sock) {
 
   my->httpd = httpd;
   my->io = tk_iostream_tcp_create(sock);
+  str_init(&(my->body), 100);
 
   parser = (http_parser*)my;
   http_parser_init(parser, HTTP_REQUEST);
