@@ -153,20 +153,7 @@ ret_t http_route_parse_args(const char* pattern, const char* url, object_t* args
 
 static const char* get_file_name(http_connection_t* c, const char* web_root,
                                  char filename[MAX_PATH + 1]) {
-  char root[MAX_PATH + 1];
-  char abs_path[MAX_PATH + 1];
-  path_abs(web_root, abs_path, MAX_PATH);
-  path_normalize(abs_path, root, MAX_PATH);
-
-  path_build(abs_path, MAX_PATH, root, c->url, NULL);
-  path_normalize(abs_path, filename, MAX_PATH);
-
-  if (strncmp(filename, root, strlen(root)) == 0) {
-    return filename;
-  } else {
-    log_debug("bad request: %s\n", c->url);
-    return NULL;
-  }
+  return path_abs_normalize_with_root(web_root, c->url, filename);
 }
 
 ret_t http_route_handle_static_file(http_connection_t* c, const char* web_root) {

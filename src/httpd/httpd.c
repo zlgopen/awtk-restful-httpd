@@ -34,11 +34,17 @@
 #include "httpd/http_parser.h"
 #include "httpd/http_connection.h"
 
-httpd_t* httpd_create(int port, int max_client) {
-  httpd_t* httpd = TKMEM_ZALLOC(httpd_t);
+httpd_t* httpd_create_ex(event_source_manager_t* esm, int port, int max_client) {
+  httpd_t* httpd = NULL;
+  return_value_if_fail(esm != NULL, NULL);
+  return_value_if_fail(port > 0, NULL);
+  return_value_if_fail(max_client > 0, NULL);
+
+  httpd = TKMEM_ZALLOC(httpd_t);
   return_value_if_fail(httpd != NULL, NULL);
 
   httpd->sock = -1;
+  httpd->esm = esm;
   httpd->port = port;
   httpd->max_client = max_client;
 
@@ -215,7 +221,7 @@ static ret_t httpd_on_client(event_source_t* source) {
     log_debug("client connected:%d\n", sock);
     if (parser != NULL) {
       event_source_t* client_source = event_source_fd_create(sock, httpd_on_data, parser);
-      main_loop_add_event_source(main_loop(), client_source);
+      event_source_manager_add(httpd->esm, client_source);
       OBJECT_UNREF(client_source);
     } else {
       log_debug("oom! disconnected:%d\n", sock);
@@ -241,7 +247,7 @@ ret_t httpd_start(httpd_t* httpd) {
   return_value_if_fail(source != NULL, RET_OOM);
 
   log_debug("listen on %d\n", httpd->port);
-  main_loop_add_event_source(main_loop(), source);
+  event_source_manager_add(httpd->esm, source);
   OBJECT_UNREF(source);
 
   return RET_OK;

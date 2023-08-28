@@ -10,7 +10,7 @@ EXPORTS
     http_route_match
     http_route_parse_args
     http_route_handle_static_file
-    httpd_create
+    httpd_create_ex
     httpd_set_routes
     httpd_start
     httpd_destroy

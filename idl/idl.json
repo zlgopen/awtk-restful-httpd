@@ -314,6 +314,11 @@
       {
         "params": [
           {
+            "type": "event_source_manager_t*",
+            "name": "esm",
+            "desc": "事件管理器。"
+          },
+          {
             "type": "int",
             "name": "port",
             "desc": "监听的端口。"
@@ -326,7 +331,7 @@
         ],
         "annotation": {},
         "desc": "创建httpd对象。",
-        "name": "httpd_create",
+        "name": "httpd_create_ex",
         "return": {
           "type": "httpd_t*",
           "desc": "返回httpd对象。"
